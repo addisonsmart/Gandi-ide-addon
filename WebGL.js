@@ -593,7 +593,7 @@ class WebGLThreeJSExampleExtension {
         sphere.receiveShadow = true; // Enable receiving shadows
 
         // Push the sphere mesh to the cubes array (if using same array for both)
-        this.cubes.push(sphere); // Ensure you're pushing the mesh itself
+        this.spheres.push(sphere); // Ensure you're pushing the mesh itself
 
         this.scene.add(sphere); // Add to the scene
 
