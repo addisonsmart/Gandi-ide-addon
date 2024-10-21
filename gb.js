@@ -1,7 +1,7 @@
 class GameBoyEmulatorExtension {
   constructor() {
     this.gb = null;
-    this.isJsGBLoaded = false;
+    this.isGBALoaded = false;
   }
 
   getInfo() {
@@ -49,47 +49,47 @@ class GameBoyEmulatorExtension {
     };
   }
 
-  loadjsGB(callback) {
-    if (this.isJsGBLoaded) {
-        callback();
-        return;
+  loadGBALibrary(callback) {
+    if (this.isGBALoaded) {
+      callback();
+      return;
     }
 
     const script = document.createElement('script');
-    script.src = 'https://raw.githubusercontent.com/plavelo/jsGB/feature/es2015/js/gb.js';  // Example link
+    script.src = 'https://cdn.rawgit.com/taisel/GameBoy-Online/master/js/gba.js';  // Example link
     script.onload = () => {
-        this.isJsGBLoaded = true;
-        console.log('jsGB library loaded.');
-        callback();
+      this.isGBALoaded = true;
+      console.log('GBA.js library loaded.');
+      callback();
     };
     script.onerror = () => {
-        console.error('Failed to load jsGB library.');
+      console.error('Failed to load GBA.js library.');
     };
     document.head.appendChild(script);
-}
-
+  }
 
   loadROM(url, callback) {
     fetch(url)
-        .then(response => response.arrayBuffer())
-        .then(buffer => {
-            const rom = new Uint8Array(buffer);
-            callback(rom);
-        })
-        .catch(error => {
-            console.error('Failed to load ROM:', error);
-        });
-}
+      .then(response => response.arrayBuffer())
+      .then(buffer => {
+        const rom = new Uint8Array(buffer);
+        callback(rom);
+      })
+      .catch(error => {
+        console.error('Failed to load ROM:', error);
+      });
+  }
 
-startGame() {
-    this.loadjsGB(() => {
-        this.loadROM('https://addisonsmart.github.io/Gandi-ide-addon/lozla.gb', (rom) => {
-            const emulator = new gb(rom);  // Assuming 'gb' is the jsGB class constructor
-            emulator.start();  // Starts the emulator
-            console.log('Game started.');
-        });
+  startGame() {
+    this.loadGBALibrary(() => {
+      this.loadROM('https://addisonsmart.github.io/Gandi-ide-addon/rom.gb', (rom) => {
+        const canvas = document.getElementById('emulatorCanvas');  // Add this canvas in your HTML
+        this.gb = new GameBoyCore(canvas, rom);  // Assuming 'GameBoyCore' is the constructor from GBA.js
+        this.gb.run();  // Start the emulator
+        console.log('Game started.');
+      });
     });
-}
+  }
 
   // Function to simulate button presses
   pressButton(args) {
