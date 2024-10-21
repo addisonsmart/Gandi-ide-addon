@@ -68,39 +68,27 @@ class GameBoyEmulatorExtension {
 }
 
 
-  // Function to load the ROM
-  loadRom(args) {
-    const romUrl = args.ROM;
+  loadROM(url, callback) {
+    fetch(url)
+        .then(response => response.arrayBuffer())
+        .then(buffer => {
+            const rom = new Uint8Array(buffer);
+            callback(rom);
+        })
+        .catch(error => {
+            console.error('Failed to load ROM:', error);
+        });
+}
 
-    fetch(romUrl)
-      .then(response => response.arrayBuffer())
-      .then(buffer => {
-        this.gb = new jsGB();
-        this.gb.loadROM(buffer);
-      })
-      .catch(err => console.error('Error loading ROM:', err));
-  }
-
-  // Function to start the emulator
-  startEmulation() {
-    if (this.gb) {
-      const targetDiv = document.querySelector('.gandi_stage_stage_1fD7k.ccw-stage-wrapper');
-      
-      // Create and append a canvas element if it doesn't exist
-      if (!targetDiv.querySelector('canvas')) {
-        const canvas = document.createElement('canvas');
-        canvas.width = 160; // Game Boy resolution width
-        canvas.height = 144; // Game Boy resolution height
-        targetDiv.appendChild(canvas);
-      }
-
-      const canvas = targetDiv.querySelector('canvas');
-      const context = canvas.getContext('2d');
-
-      this.gb.setCanvasContext(context);
-      this.gb.start();
-    }
-  }
+startGame() {
+    this.loadjsGB(() => {
+        this.loadROM('https://addisonsmart.github.io/Gandi-ide-addon/rom.gb', (rom) => {
+            const emulator = new gb(rom);  // Assuming 'gb' is the jsGB class constructor
+            emulator.start();  // Starts the emulator
+            console.log('Game started.');
+        });
+    });
+}
 
   // Function to simulate button presses
   pressButton(args) {
