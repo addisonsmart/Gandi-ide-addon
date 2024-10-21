@@ -83,7 +83,7 @@ class GameBoyEmulatorExtension {
 
 startGame() {
     this.loadjsGB(() => {
-        this.loadROM('https://addisonsmart.github.io/Gandi-ide-addon/rom.gb', (rom) => {
+        this.loadROM('https://addisonsmart.github.io/Gandi-ide-addon/lozla.gb', (rom) => {
             const emulator = new gb(rom);  // Assuming 'gb' is the jsGB class constructor
             emulator.start();  // Starts the emulator
             console.log('Game started.');
