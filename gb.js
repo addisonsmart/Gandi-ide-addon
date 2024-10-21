@@ -1,6 +1,7 @@
 class GameBoyEmulatorExtension {
   constructor() {
     this.gb = null;
+    this.isJsGBLoaded = false;
   }
 
   getInfo() {
