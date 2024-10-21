@@ -21,13 +21,13 @@ class GameBoyEmulatorExtension {
               defaultValue: 'path/to/rom.gb',
             },
           },
-          func: 'loadRom',
+          func: 'loadROM',
         },
         {
           opcode: 'startEmulation',
           blockType: Scratch.BlockType.COMMAND,
           text: 'start emulation',
-          func: 'startEmulation',
+          func: 'startGame',
         },
         {
           opcode: 'pressButton',
