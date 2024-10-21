@@ -48,6 +48,26 @@ class GameBoyEmulatorExtension {
     };
   }
 
+  loadjsGB(callback) {
+    if (this.isJsGBLoaded) {
+        callback();
+        return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://raw.githubusercontent.com/plavelo/jsGB/feature/es2015/js/gb.js';  // Example link
+    script.onload = () => {
+        this.isJsGBLoaded = true;
+        console.log('jsGB library loaded.');
+        callback();
+    };
+    script.onerror = () => {
+        console.error('Failed to load jsGB library.');
+    };
+    document.head.appendChild(script);
+}
+
+
   // Function to load the ROM
   loadRom(args) {
     const romUrl = args.ROM;
