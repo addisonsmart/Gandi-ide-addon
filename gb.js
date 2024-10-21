@@ -50,23 +50,23 @@ class GameBoyEmulatorExtension {
   }
 
   loadGBALibrary(callback) {
-    if (this.isGBALoaded) {
-      callback();
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = 'https://cdn.rawgit.com/taisel/GameBoy-Online/master/js/gba.js';  // Example link
-    script.onload = () => {
-      this.isGBALoaded = true;
-      console.log('GBA.js library loaded.');
-      callback();
-    };
-    script.onerror = () => {
-      console.error('Failed to load GBA.js library.');
-    };
-    document.head.appendChild(script);
+  if (this.isGBALoaded) {
+    callback();
+    return;
   }
+
+  const script = document.createElement('script');
+  script.src = 'https://raw.githubusercontent.com/plavelo/jsGB/feature/es2015/js/gb.js';  // Check for availability
+  script.onload = () => {
+    this.isGBALoaded = true;
+    console.log('jsGB library loaded.');
+    callback();
+  };
+  script.onerror = () => {
+    console.error('Failed to load jsGB library.');
+  };
+  document.head.appendChild(script);
+}
 
   loadROM(url, callback) {
     fetch(url)
