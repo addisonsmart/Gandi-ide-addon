@@ -1,165 +1,102 @@
-class PhysicsRenderer {
-    constructor() {
-        this.scene = null;
-        this.camera = null;
-        this.renderer = null;
-        this.shapes = [];
-        this.physicsWorld = null;
-        this.physicsBodies = [];
-        this.clock = new THREE.Clock(); // For physics stepping
-    }
+class ExampleExtension {
+  getInfo() {
+    return {
+      id: 'cannonThreeExtension',
+      name: 'Cannon & Three.js',
+      color1: '#4D7EB4',
+      menuIconURI:
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAFCAAAAACyOJm3AAAAFklEQVQYV2P4DwMMEMgAI/+DE' +
+        'UIMBgAEWB7i7uidhAAAAABJRU5ErkJggg==',
+      blockIconURI:
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABmJLR0QA/wD/AP+gvaeTAAAEtklEQVRoge2ZW4hWVRTHf984Kk1jlj2kI2H2UIwRacVot7EiSLtQBFlPRWUvSQTdsJCCyogy6CWSiMoeqrGioKDJLmpWYxcjxyZSJ4hRuznihZnQRj09rP/unO+b852z9/edT3qYPxz2OXuv9V9rX87Za68DYxhDQ1AqmO9sYAEwDzgDaAMmq20/8BuwDegBuoEfC7Y/CuOAl4HdwAfAyRmy44E7gF4gCrw2A7eLoxpagC758jZwXEhHbqww+FIVuYuBvoTcHuBN4DagA5ghR1p036G2Lsk6vT7goio2llf4cndIR96X0tPAQeCIOpfE/cCI5AaAxUBzgI1m4E7pRuK6t0LmioT9JyT3TYANfpHS6SKPgMPAc8DMBGkErAAmhpBXYCLwbILvcezdekydiICngON1P0TAuz0opTY9P0g8+u76B5uForBYnBE2AxFwFFsVJWACNphHyX6nyrBJRFcm6s4BPiLuyJL6fR+FJQn+dcCFibY5qt8RQuiWzocV9d2qf71WTz3wRhXbq1T/YgjZNOy7HwGPqO4SPR8ATqrH0xxMkY1INgHuwpbUIeDMUMKbpRwBn2BT7b5kjcYK2foUeJcClvMiYG+CaASbrUZjOvZiO7vD2Ke6LpxCvG6/rpcsAN/K5jvAqXnCTR6EfwK/6n5t7X4FY53KrXh8qXw6AvbpBfgipe1qYKeMLfTk89HbUGG7EGzDpnl2StsO4rU8EMCZp3eu2rb6kPnOiAvF93jKF4FBlScWSepinpaUtoXY6A5gZxFf5Om1yObBIE9z4JbAsYa3XZ+ldVp9vhSCun3oAP7ARuXLAL2vdCXPJ83A56oP4YmA34HzA/TK0IntqBEWJrQG6G6R3irsKDAdeE11vQE8rcQhyhDVT5FVMYP4TLKS8CTFfOJBSF7DxIGgL5qwiDcC/sJjl3coYUFiBKzBEhG1YA7wHjYgg9jIpu1DPhiX8OljPAf2Bins5dgEiL5oA/Zhvl3vo7BZwvc10Kla8QDm2/d5gudJcB922P+/oZV4VsqWaeU+cq3K1diL6TAN+A74rEEOpmEtFsonl/cQ8Jbur8tSXoP1NpnDmgn0E395phblaQamJuz1U74hLlJ9dxaBi3Lb9TwZ+JnyT+hlhbqcjssrbP5EHLi2kxIVVy6tKSpd5PkMdtjvA15V3axCXU7HWSpfke124lzBbpVZ+ej/ZuQmLDo9gmUuZgG3qu35Ql1OxwuydYtsH5IvC+Rb7jnlYUbvxg+pbTbhMVet6JEtdzpcmuLX0iyCJmAZ1tte4B7iXXQCNjLDhCWrQzEe+Fu2XGq0JF965dsy/A+FqfiB8pFqBFxqdFOIUmivHPkFgXohmKcyd/dOIrQj7v24NENmPbAdeBSYC5yga67qthOnetIwX2XIuSUYLv+7K0PG97dbNeyiPO9bONqId/j1GXLO0ZXYAeuAri2qy+uIyzH3E/+fKQwlLM6KgI3ApAzZPEfz2ifJhkueF4prRLyf/Fir3o4gG+63xlWePnphtUiXe8gW0RGAJyXX5SHrjZ0i7fSQLaojnQSkYX2TCiOE7+bVuEMTfYfx+Pnpu49sDDS+IaMtLaOfhZ5A+TGMoUj8CyaTiB/WbnspAAAAAElFTkSuQmCC',
+      docsURI: 'https://ccw.site',
+      blocks: [
+        {
+          opcode: 'initPhysics',
+          blockType: Scratch.BlockType.COMMAND,
+          text: 'initialize physics and rendering',
+          func: 'initPhysics',
+        },
+        {
+          opcode: 'addBall',
+          blockType: Scratch.BlockType.COMMAND,
+          text: 'add ball at x: [X] y: [Y] z: [Z]',
+          arguments: {
+            X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+            Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+            Z: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+          },
+          func: 'addBall',
+        },
+      ],
+    };
+  }
 
-    getInfo() {
-        return {
-            id: 'physicsRenderer',
-            name: 'Physics Renderer',
-            blocks: [
-                {
-                    opcode: 'initPhysicsRenderer',
-                    blockType: Scratch.BlockType.COMMAND,
-                    text: 'initialize physics and renderer',
-                    func: 'initPhysicsRenderer',
-                },
-                {
-                    opcode: 'addPhysicsShape',
-                    blockType: Scratch.BlockType.COMMAND,
-                    text: 'add [SHAPE] at x: [X] y: [Y] z: [Z] with size w: [WIDTH] h: [HEIGHT] d: [DEPTH]',
-                    arguments: {
-                        SHAPE: { type: Scratch.ArgumentType.STRING, defaultValue: 'cube', menu: 'shapeMenu' },
-                        X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-                        Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-                        Z: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-                        WIDTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
-                        HEIGHT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
-                        DEPTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
-                    },
-                    func: 'addPhysicsShape',
-                },
-                {
-                    opcode: 'stepPhysics',
-                    blockType: Scratch.BlockType.COMMAND,
-                    text: 'step physics',
-                    func: 'stepPhysics',
-                }
-            ],
-            menus: {
-                shapeMenu: {
-                    acceptReporters: true,
-                    items: ['cube', 'sphere'],
-                },
-            },
-        };
-    }
+  constructor() {
+    this.world = null;
+    this.scene = null;
+    this.renderer = null;
+    this.bodies = [];
+  }
 
-    loadLibraries(callback) {
-        const loadScript = (url, onLoad) => {
-            const script = document.createElement('script');
-            script.src = url;
-            script.onload = onLoad;
-            script.onerror = () => console.error(`Failed to load script: ${url}`);
-            document.head.appendChild(script);
-        };
+  initPhysics() {
+    const { World, Sphere, Vec3, Body } = CANNON;
 
-        if (!window.THREE) {
-            loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js', () => {
-                if (!window.CANNON) {
-                    loadScript('https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js', callback);
-                } else {
-                    callback();
-                }
-            });
-        } else if (!window.CANNON) {
-            loadScript('https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js', callback);
-        } else {
-            callback();
-        }
-    }
+    // Initialize physics world
+    this.world = new World();
+    this.world.gravity.set(0, -9.82, 0);
 
-    initPhysicsRenderer() {
-        this.loadLibraries(() => {
-            const targetDiv = document.querySelector('.gandi_stage_stage_1fD7k.ccw-stage-wrapper');
-            if (targetDiv) {
-                // Initialize Three.js
-                this.scene = new THREE.Scene();
-                this.camera = new THREE.PerspectiveCamera(75, 448 / 252, 0.1, 1000);
-                this.camera.position.set(0, 5, 10);
-                this.camera.lookAt(0, 0, 0);
+    // Ground plane
+    const groundBody = new Body({ mass: 0 });
+    groundBody.addShape(new CANNON.Plane());
+    groundBody.position.set(0, 0, 0);
+    this.world.addBody(groundBody);
 
-                this.renderer = new THREE.WebGLRenderer();
-                this.renderer.setSize(448, 252);
-                targetDiv.insertBefore(this.renderer.domElement, targetDiv.firstChild);
+    // Initialize Three.js scene
+    this.scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, 16 / 9, 0.1, 1000);
+    camera.position.set(0, 5, 15);
+    this.scene.add(camera);
 
-                // Initialize Cannon.js
-                this.physicsWorld = new CANNON.World();
-                this.physicsWorld.gravity.set(0, -9.82, 0);
+    const light = new THREE.PointLight(0xffffff, 1);
+    light.position.set(10, 10, 10);
+    this.scene.add(light);
 
-                // Start the render loop
-                this.animate();
-                console.log('Physics and rendering initialized.');
-            } else {
-                console.error('Target div not found.');
-            }
-        });
-    }
+    // WebGL renderer
+    this.renderer = new THREE.WebGLRenderer();
+    this.renderer.setSize(800, 600);
+    document.body.appendChild(this.renderer.domElement);
 
-    addPhysicsShape(args) {
-        if (!this.scene || !this.physicsWorld) {
-            console.warn('Physics or rendering not initialized.');
-            return;
-        }
+    // Render loop
+    const animate = () => {
+      requestAnimationFrame(animate);
+      this.world.step(1 / 60);
+      this.renderer.render(this.scene, camera);
+    };
+    animate();
+  }
 
-        let geometry, bodyShape;
-        if (args.SHAPE === 'cube') {
-            geometry = new THREE.BoxGeometry(args.WIDTH, args.HEIGHT, args.DEPTH);
-            bodyShape = new CANNON.Box(new CANNON.Vec3(args.WIDTH / 2, args.HEIGHT / 2, args.DEPTH / 2));
-        } else if (args.SHAPE === 'sphere') {
-            geometry = new THREE.SphereGeometry(args.WIDTH / 2, 32, 32);
-            bodyShape = new CANNON.Sphere(args.WIDTH / 2);
-        } else {
-            console.warn(`Shape type "${args.SHAPE}" is not supported.`);
-            return;
-        }
+  addBall(args) {
+    const { X, Y, Z } = args;
 
-        // Create Three.js mesh
-        const material = new THREE.MeshStandardMaterial({ color: 0x0077ff });
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.position.set(args.X, args.Y, args.Z);
-        this.scene.add(mesh);
-        this.shapes.push(mesh);
+    const { Sphere, Vec3, Body } = CANNON;
+    const radius = 1;
 
-        // Create Cannon.js body
-        const body = new CANNON.Body({
-            mass: 1, // Default mass
-            position: new CANNON.Vec3(args.X, args.Y, args.Z),
-            shape: bodyShape,
-        });
-        this.physicsWorld.addBody(body);
-        this.physicsBodies.push(body);
-    }
+    // Add physics body
+    const ballBody = new Body({ mass: 1 });
+    ballBody.addShape(new Sphere(radius));
+    ballBody.position.set(X, Y, Z);
+    this.world.addBody(ballBody);
+    this.bodies.push(ballBody);
 
-    stepPhysics() {
-        if (!this.physicsWorld) {
-            console.warn('Physics world not initialized.');
-            return;
-        }
-
-        const deltaTime = this.clock.getDelta();
-        this.physicsWorld.step(1 / 60, deltaTime, 3);
-
-        // Sync Three.js meshes with Cannon.js bodies
-        this.shapes.forEach((mesh, index) => {
-            const body = this.physicsBodies[index];
-            if (body) {
-                mesh.position.copy(body.position);
-                mesh.quaternion.copy(body.quaternion);
-            }
-        });
-
-        this.renderer.render(this.scene, this.camera);
-    }
-
-    animate() {
-        requestAnimationFrame(() => this.animate());
-        this.stepPhysics();
-    }
+    // Add visual sphere
+    const ballGeometry = new THREE.SphereGeometry(radius);
+    const ballMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+    const ballMesh = new THREE.Mesh(ballGeometry, ballMaterial);
+    ballMesh.position.set(X, Y, Z);
+    this.scene.add(ballMesh);
+  }
 }
+
+// Register extension
+Scratch.extensions.register(new ExampleExtension());
